@@ -82,7 +82,18 @@ class TreeCapitatorHandler:
         player = event.player
         block = event.block
 
-        if not player.has_permission("kgharvest.treecapitator"):
+        has_permission = player.has_permission(
+            "kgharvest.treecapitator"
+        )
+
+        self.plugin.logger.info(
+            f"[DEBUG] BlockBreak player={player.name} "
+            f"sneaking={player.is_sneaking} "
+            f"permission={has_permission} "
+            f"block={self._get_type_id(block.type)}"
+        )
+
+        if not has_permission:
             return
 
         if self.require_sneaking and not player.is_sneaking:
@@ -90,16 +101,28 @@ class TreeCapitatorHandler:
 
         item = player.inventory.item_in_main_hand
 
+        item_type = self._get_type_id(item.type) if item else None
+
+        self.plugin.logger.info(
+            f"[DEBUG] MainHand={item_type}"
+        )
+
         if item is None:
             return
 
-        if item.type not in self.AXE_TYPES:
+        if item_type not in self.AXE_TYPES:
             return
 
-        if block.type not in self.LOG_TYPES:
+        block_type = self._get_type_id(block.type)
+
+        if block_type not in self.LOG_TYPES:
             return
 
         tree_blocks = self._find_connected_logs(block)
+
+        self.plugin.logger.info(
+            f"[DEBUG] ConnectedLogs={len(tree_blocks)}"
+        )
 
         if len(tree_blocks) <= 1:
             return
@@ -140,7 +163,9 @@ class TreeCapitatorHandler:
                 z,
             )
 
-            if block.type not in self.LOG_TYPES:
+            block_type = self._get_type_id(block.type)
+
+            if block_type not in self.LOG_TYPES:
                 continue
 
             found.append(block)
@@ -155,6 +180,10 @@ class TreeCapitatorHandler:
                 )
 
         return found
+
+    @staticmethod
+    def _get_type_id(type_object) -> str:
+        return str(type_object)
 
     @staticmethod
     def _is_same_block(first, second) -> bool:
