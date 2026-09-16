@@ -92,6 +92,7 @@ class TreeCapitatorHandler:
             "leaf_index": 0,
             "sound_counter": 0,
             "active_players": self.active_players,
+            "active": True,
         }
 
         self.plugin.logger.debug(
@@ -215,58 +216,62 @@ class TreeCapitatorHandler:
 
     def _damage_tool(self, player) -> bool:
         item = player.inventory.item_in_main_hand
-
+    
         if item is None:
             return False
-
+    
         meta = item.item_meta
-
+    
         if meta is None:
             return True
-
+    
         if meta.is_unbreakable:
             return True
-
+    
         unbreaking_level = self._get_enchantment_level(
             item,
             "unbreaking",
         )
-
+    
         if unbreaking_level > 0:
             if random.random() >= 1.0 / (
                 unbreaking_level + 1
             ):
                 return True
-
+    
         max_durability = int(
             item.type.max_durability
         )
-
+    
         if max_durability <= 0:
             return True
-
+    
         current_damage = int(
             meta.damage
         )
-
+    
         new_damage = current_damage + 1
-
+    
         if new_damage >= max_durability:
             player.inventory.item_in_main_hand = None
-
+    
             message = self.messages.prefixed(
                 "tree_capitator.axe_broken",
                 "§cYour axe broke.",
             )
-
+    
             if message:
                 player.send_message(message)
-
+    
             return False
-
+    
         meta.damage = new_damage
         item.set_item_meta(meta)
-
+    
+        # ItemStack/ItemMeta are handled as objects/copies.
+        # Re-apply the modified stack to the player's inventory.
+        player.inventory.item_in_main_hand = item
+    
         return True
 
     def _tool_is_valid(self, player) -> bool:
@@ -354,9 +359,15 @@ class TreeCapitatorHandler:
             )
 
     def _finish_harvest(self, state) -> None:
-        player = state["player"]
-        player_id = str(player.unique_id)
-
+        if not state["active"]:
+            return
+    
+        state["active"] = False
+    
+        player_id = str(
+            state["player"].unique_id
+        )
+    
         self.active_players.discard(
             player_id,
         )

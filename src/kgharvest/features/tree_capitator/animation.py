@@ -32,10 +32,14 @@ class TreeCapitatorAnimation:
         )
 
     def tick(self, state) -> None:
+        if not state["active"]:
+            return
+    
         player = state["player"]
         player_id = str(player.unique_id)
-
+    
         if player_id not in state["active_players"]:
+            state["active"] = False
             return
 
         if not self.is_tool_valid(player):
