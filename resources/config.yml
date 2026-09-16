@@ -1,8 +1,26 @@
 tree_capitator:
   enabled: true
 
-  # Tree Capitator only activates while sneaking.
   require_sneaking: true
 
-  # Maximum number of logs processed from one tree.
   max_blocks: 32
+
+  max_leaves: 128
+
+  effects:
+    enabled: true
+
+    bottom_particle: "kgserver:break1"
+    top_particle: "kgserver:break2"
+
+    bottom_start_y: -0.9
+    bottom_end_y: -0.1
+
+    top_start_y: 0.1
+    top_end_y: 0.9
+
+    particle_step_y: 0.2
+
+    sound: "kgserver.break.log"
+    sound_volume: 1.0
+    sound_pitch: 1.0
