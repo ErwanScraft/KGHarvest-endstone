@@ -23,13 +23,15 @@ class KGHarvestMessages:
         )
 
         default_messages = {
-            "prefix": "<green>KGHarvest</green> <dark_gray>»</dark_gray>",
+            "prefix": "§aKGHarvest §8»",
             "tree_capitator": {
-                "harvested": "<green>Harvested <white>{amount}</white> logs.</green>",
+                "active": "§a● §fTree Capitator §aActive",
+                "harvested": "§aHarvested §f{amount} §alog(s).",
                 "limit_reached": (
-                    "<yellow>Tree Capitator limit reached: "
-                    "<white>{limit}</white> logs.</yellow>"
+                    "§eTree Capitator limit reached: "
+                    "§f{limit} §alog(s)."
                 ),
+                "axe_broken": "§cYour axe broke.",
             },
         }
 
@@ -50,4 +52,34 @@ class KGHarvestMessages:
 
             value = value[key]
 
+        if not isinstance(value, str):
+            return default
+
         return value
+
+    def format(self, path: str, default: str = "", **values) -> str:
+        message = self.get(path, default)
+
+        if not message:
+            return ""
+
+        try:
+            return message.format(**values)
+        except (KeyError, ValueError):
+            return message
+
+    def prefixed(self, path: str, default: str = "", **values) -> str:
+        prefix = self.get("prefix", "")
+        message = self.format(
+            path,
+            default,
+            **values,
+        )
+
+        if not message:
+            return prefix
+
+        if not prefix:
+            return message
+
+        return f"{prefix} §r{message}"

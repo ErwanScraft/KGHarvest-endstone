@@ -10,7 +10,7 @@ class KGHarvestPlugin(Plugin):
     api_version = "0.11"
 
     name = "KGHarvest"
-    version = "0.1.0"
+    version = "0.1.5"
     description = "Harvesting enhancements for KG Survival."
     authors = ["ErwanScraft"]
     prefix = "KGHarvest"
@@ -25,32 +25,30 @@ class KGHarvestPlugin(Plugin):
     def on_enable(self) -> None:
         self.config_manager = ConfigManager(self)
         self.messages = KGHarvestMessages(self)
-
+    
         self.tree_capitator = TreeCapitatorHandler(
             self,
             self.config_manager,
             self.messages,
         )
-
+    
         self.register_events(self)
-
+    
         indicator_interval = max(
             1,
-            int(
-                self.config_manager.get(
-                    "tree_capitator.indicator.interval",
-                    5,
-                )
+            self.config_manager.get_int(
+                "tree_capitator.indicator.interval",
+                5,
             ),
         )
-
+    
         self.server.scheduler.run_task(
             self,
             self._update_tree_capitator_indicator,
             delay=1,
             period=indicator_interval,
         )
-
+    
         self.logger.info(
             f"{self.name} v{self.version} enabled."
         )

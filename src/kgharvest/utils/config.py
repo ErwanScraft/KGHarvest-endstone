@@ -26,7 +26,43 @@ class ConfigManager:
             "tree_capitator": {
                 "enabled": True,
                 "require_sneaking": True,
-                "max_blocks": 32,
+                "limits": {
+                    "logs": 32,
+                    "leaves": 128,
+                },
+                "animation": {
+                    "enabled": True,
+                    "delay": 1,
+                    "logs_per_tick": 1,
+                    "leaves_per_tick": 4,
+                },
+                "indicator": {
+                    "enabled": True,
+                    "interval": 5,
+                },
+                "effects": {
+                    "enabled": True,
+                    "particles": {
+                        "log_bottom": "kgserver:break1",
+                        "log_top": "kgserver:break2",
+                        "leaf": "kgserver:break1",
+                        "step_y": 0.2,
+                        "bottom": {
+                            "start_y": -0.9,
+                            "end_y": -0.1,
+                        },
+                        "top": {
+                            "start_y": 0.1,
+                            "end_y": 0.9,
+                        },
+                    },
+                    "sound": {
+                        "name": "kgserver.break.log",
+                        "volume": 0.75,
+                        "pitch": 1.0,
+                        "interval": 2,
+                    },
+                },
             }
         }
 
@@ -35,6 +71,7 @@ class ConfigManager:
                 default_config,
                 file,
                 sort_keys=False,
+                allow_unicode=True,
             )
 
     def get(self, path: str, default=None):
@@ -47,3 +84,23 @@ class ConfigManager:
             value = value[key]
 
         return value
+
+    def get_int(self, path: str, default: int) -> int:
+        try:
+            return int(self.get(path, default))
+        except (TypeError, ValueError):
+            return default
+
+    def get_float(self, path: str, default: float) -> float:
+        try:
+            return float(self.get(path, default))
+        except (TypeError, ValueError):
+            return default
+
+    def get_bool(self, path: str, default: bool) -> bool:
+        value = self.get(path, default)
+
+        if isinstance(value, bool):
+            return value
+
+        return default

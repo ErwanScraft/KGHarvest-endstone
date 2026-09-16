@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "endstone-kgharvest"
-version = "0.1.0"
+version = "0.1.5"
 description = "Harvesting enhancements for KG Survival."
 authors = [
     { name = "ErwanScraft" },
