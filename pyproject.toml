@@ -1,0 +1,25 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "endstone-kgharvest"
+version = "0.1.0"
+description = "Harvesting enhancements for KG Survival."
+authors = [
+    { name = "ErwanScraft" },
+]
+requires-python = ">=3.9"
+dependencies = [
+    "endstone>=0.11.10,<0.12",
+]
+
+[project.entry-points.endstone]
+kgharvest = "kgharvest:KGHarvestPlugin"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/kgharvest"]
+
+[tool.hatch.build.targets.wheel.force-include]
+"resources/config.yml" = "kgharvest/config.yml"
+"resources/message.yml" = "kgharvest/message.yml"
