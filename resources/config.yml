@@ -4,14 +4,30 @@ tree_capitator:
   require_sneaking: true
 
   max_blocks: 32
-
   max_leaves: 128
+
+  animation:
+    # Delay between each animation cycle in ticks.
+    delay: 1
+
+    # Number of logs removed per animation cycle.
+    logs_per_tick: 1
+
+    # Number of leaves removed per animation cycle.
+    leaves_per_tick: 4
+
+  indicator:
+    enabled: true
+
+    # How often the crouch indicator is refreshed.
+    interval: 5
 
   effects:
     enabled: true
 
     bottom_particle: "kgserver:break1"
     top_particle: "kgserver:break2"
+    leaf_particle: "kgserver:break1"
 
     bottom_start_y: -0.9
     bottom_end_y: -0.1
@@ -22,5 +38,9 @@ tree_capitator:
     particle_step_y: 0.2
 
     sound: "kgserver.break.log"
-    sound_volume: 1.0
+
+    sound_volume: 0.75
     sound_pitch: 1.0
+
+    # Play the sound every N processed logs.
+    sound_interval: 2

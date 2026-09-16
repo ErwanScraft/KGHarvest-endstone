@@ -1,5 +1,8 @@
 prefix: "<green>KGHarvest</green> <dark_gray>»</dark_gray>"
 
 tree_capitator:
+  active: "<green>● Tree Capitator Active</green>"
+
   harvested: "<green>Harvested <white>{amount}</white> logs.</green>"
+
   limit_reached: "<yellow>Tree Capitator limit reached: <white>{limit}</white> logs.</yellow>"
