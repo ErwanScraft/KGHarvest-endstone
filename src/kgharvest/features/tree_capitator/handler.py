@@ -109,18 +109,26 @@ class TreeCapitatorHandler:
             True,
         ):
             return
-
+    
         if not player.has_permission(self.PERMISSION):
             return
-
+    
         if not player.is_sneaking:
             return
-
+    
+        item = player.inventory.item_in_main_hand
+    
+        if not self.detector.is_axe(item):
+            return
+    
         message = self.messages.get(
             "tree_capitator.active",
-            "§a● §fTree Capitator §aActive",
+            "",
         )
-
+    
+        if not message:
+            return
+    
         player.send_tip(message)
 
     def _process_log(
