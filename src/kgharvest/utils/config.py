@@ -1,5 +1,4 @@
 from pathlib import Path
-from shutil import copyfile
 
 import yaml
 
@@ -15,26 +14,18 @@ class ConfigManager:
     def _ensure_config(self) -> None:
         if self.path.exists():
             return
-
-        self.path.parent.mkdir(
-            parents=True,
-            exist_ok=True,
-        )
-
-        resource_path = (
-            Path(self.plugin.data_folder).parent
-            / "resources"
-            / "config.yml"
-        )
-
-        if resource_path.exists():
-            copyfile(
-                resource_path,
-                self.path,
+    
+        try:
+            self.plugin.save_resources(
+                "config.yml",
             )
-            return
-
-        self.path.touch()
+        except (
+            FileNotFoundError,
+            OSError,
+        ) as error:
+            self.plugin.logger.error(
+                f"Failed to create config.yml: {error}"
+            )
 
     def _load(self) -> None:
         try:

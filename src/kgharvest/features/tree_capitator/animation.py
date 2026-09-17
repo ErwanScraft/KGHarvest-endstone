@@ -14,6 +14,7 @@ class TreeCapitatorAnimation:
         self.process_leaf = process_leaf
         self.is_tool_valid = is_tool_valid
         self.finish = finish
+        self.tasks = {}
 
     def start(self, state) -> None:
         delay = max(
@@ -23,16 +24,44 @@ class TreeCapitatorAnimation:
                 1,
             ),
         )
-
-        self.plugin.server.scheduler.run_task(
+    
+        player_id = str(
+            state["player"].unique_id
+        )
+    
+        task = self.plugin.server.scheduler.run_task(
             self.plugin,
             lambda: self.tick(state),
             delay=delay,
             period=delay,
         )
+    
+        self.tasks[player_id] = task
+    
+    def _cancel_task(self, state) -> None:
+        player_id = str(
+            state["player"].unique_id
+        )
+    
+        task = self.tasks.pop(
+            player_id,
+            None,
+        )
+    
+        if task is None:
+            return
+    
+        try:
+            task.cancel()
+        except (
+            AttributeError,
+            RuntimeError,
+        ):
+            pass
 
     def tick(self, state) -> None:
         if not state["active"]:
+            self._cancel_task(state)
             return
     
         player = state["player"]
@@ -40,6 +69,7 @@ class TreeCapitatorAnimation:
     
         if player_id not in state["active_players"]:
             state["active"] = False
+            self._cancel_task(state)
             return
 
         if not self.is_tool_valid(player):
@@ -145,3 +175,6 @@ class TreeCapitatorAnimation:
             state["leaf_index"] += 1
 
         self.finish(state)
+    
+    def cancel(self, state) -> None:
+        self._cancel_task(state)

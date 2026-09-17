@@ -11,7 +11,7 @@ authors = [
 ]
 requires-python = ">=3.9"
 dependencies = [
-    "endstone>=0.11.10,<0.12",
+    "endstone>=0.11.11,<0.12",
 ]
 
 [project.entry-points.endstone]

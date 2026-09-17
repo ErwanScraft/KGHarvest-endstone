@@ -138,12 +138,12 @@ class TreeCapitatorHandler:
     ) -> bool:
         player = state["player"]
 
+        if not self.detector.is_log(block):
+            return True
+        
         log_type = self.detector.type_id(
             block.type,
         )
-
-        if not self.detector.is_log(block):
-            return True
 
         state["sound_counter"] = (
             self.effects.play_log_effect(
@@ -379,6 +379,8 @@ class TreeCapitatorHandler:
         self.active_players.discard(
             player_id,
         )
+    
+        self.animation.cancel(state)
 
     @staticmethod
     def _get_enchantment_level(
